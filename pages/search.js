@@ -20,7 +20,7 @@ const SearchPage = () => {
   return (
     <Container>
       <Row>
-        <h1>Search Results for "{query}"</h1>
+        <h1>Search Results for {query}</h1>
         {data.objectIDs ? (
           data.objectIDs
             .slice(0, 10)
