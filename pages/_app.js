@@ -1,7 +1,13 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from "../components/Navbar";
+import { Container } from "react-bootstrap";
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+export default function App({ Component, pageProps }) {
+  return (
+    <>
+      <Container>
+        <Component {...pageProps} />
+      </Container>
+    </>
+  );
 }
-
-export default MyApp;

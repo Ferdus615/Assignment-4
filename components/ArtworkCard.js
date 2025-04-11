@@ -1,44 +1,61 @@
-import useSWR from "swr";
-import fetcher from "../utils/fetcher";
-import Link from "next/link";
-import { Card, Button } from "react-bootstrap";
 
-const ArtworkCard = ({ id }) => {
+import Card from "react-bootstrap/Card";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+import { Button } from "react-bootstrap";
+import { useAtom } from "jotai";
+import { favouritesAtom } from "../store/atom";
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+export default function ArtworkCard({ objectID }) {
   const { data, error } = useSWR(
-    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`,
+    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}`,
     fetcher
   );
+  const [favourites, setFavourites] = useAtom(favouritesAtom);
+  const [isFavourite, setIsFavourite] = useState(false);
+
+  useEffect(() => {
+    setIsFavourite(favourites.includes(objectID));
+  }, [favourites]);
+
+  function toggleFavourite() {
+    if (isFavourite) {
+      setFavourites(favourites.filter((id) => id !== objectID));
+    } else {
+      setFavourites([...favourites, objectID]);
+    }
+  }
 
   if (error) return null;
-  if (!data) return <p>Loading...</p>;
-
-  // return (
-  //   <div className="card">
-  //     <img
-  //       src={data.primaryImageSmall || "/placeholder.jpg"}
-  //       alt={data.title}
-  //     />
-  //     <h3>{data.title}</h3>
-  //     <Link href={`/artwork/${id}`}>View Details</Link>
-  //   </div>
-  // );
+  if (!data) return null;
 
   return (
-    <div className="col-md-4 mb-4">
-      <Card className="h-50 shadow-sm">
-        <Card.Img
-          variant="top"
-          src={data.primaryImageSmall || "/placeholder.jpg"}
-          alt={data.title}
-        />
-        <Card.Body>
-          <Card.Title>{data.title}</Card.Title>
-          <Card.Text>{data.description}</Card.Text>
-          <Button variant="primary">View Details</Button>
-        </Card.Body>
-      </Card>
-    </div>
+    <Card className="mb-3">
+      <Card.Img
+        variant="top"
+        src={
+          data.primaryImageSmall ||
+          "https://via.placeholder.com/375x375.png?text=No+Image"
+        }
+      />
+      <Card.Body>
+        <Card.Title>{data.title}</Card.Title>
+        <Card.Text>
+          Object Date: {data.objectDate}
+          <br />
+          Classification: {data.classification}
+          <br />
+          Medium: {data.medium}
+        </Card.Text>
+        <Button
+          variant={isFavourite ? "danger" : "outline-primary"}
+          onClick={toggleFavourite}
+        >
+          {isFavourite ? "Remove from Favourites" : "Add to Favourites"}
+        </Button>
+      </Card.Body>
+    </Card>
   );
-};
-
-export default ArtworkCard;
+}
