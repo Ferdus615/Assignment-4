@@ -8,14 +8,19 @@ const ArtworkDetail = () => {
   const router = useRouter();
   const { objectID } = router.query;
 
+  // This tells SWR whether it should fetch or not
+  const shouldFetch = objectID && getValidObjectID(objectID);
+
+  const { data, error } = useSWR(
+    shouldFetch
+      ? `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}`
+      : null, // null = skip fetch
+    fetcher
+  );
+
   if (!objectID || !getValidObjectID(objectID)) {
     return <p>Invalid artwork ID.</p>;
   }
-
-  const { data, error } = useSWR(
-    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}`,
-    fetcher
-  );
 
   if (error) return <p>Error loading artwork.</p>;
   if (!data) return <p>Loading...</p>;
