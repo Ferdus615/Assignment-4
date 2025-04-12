@@ -1,10 +1,10 @@
-
 import Card from "react-bootstrap/Card";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { Button } from "react-bootstrap";
 import { useAtom } from "jotai";
 import { favouritesAtom } from "../store/atom";
+import Image from "next/image";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -13,12 +13,13 @@ export default function ArtworkCard({ objectID }) {
     `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}`,
     fetcher
   );
+
   const [favourites, setFavourites] = useAtom(favouritesAtom);
   const [isFavourite, setIsFavourite] = useState(false);
 
   useEffect(() => {
     setIsFavourite(favourites.includes(objectID));
-  }, [favourites]);
+  }, [favourites, objectID]); // ✅ added objectID here
 
   function toggleFavourite() {
     if (isFavourite) {
@@ -28,17 +29,19 @@ export default function ArtworkCard({ objectID }) {
     }
   }
 
-  if (error) return null;
-  if (!data) return null;
+  if (error || !data) return null;
 
   return (
     <Card className="mb-3">
-      <Card.Img
-        variant="top"
+      <Image
         src={
-          data.primaryImageSmall ||
-          "https://via.placeholder.com/375x375.png?text=No+Image"
+          data.primaryImageSmall || "https://placehold.co/375x375?text=No+Image"
         }
+        alt={data.title}
+        width={375}
+        height={375}
+        className="card-img-top"
+        unoptimized={!data.primaryImageSmall}
       />
       <Card.Body>
         <Card.Title>{data.title}</Card.Title>

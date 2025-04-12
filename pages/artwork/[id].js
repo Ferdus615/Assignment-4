@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { getValidObjectID } from "../../store/artwork";
+import Image from "next/image";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -28,9 +29,12 @@ const ArtworkDetail = () => {
   return (
     <div>
       <h1>{data.title}</h1>
-      <img
+      <Image
         src={data.primaryImage || "https://placehold.co/375x375?text=No+Image"}
         alt={data.title}
+        width={375}
+        height={375}
+        unoptimized={!data.primaryImage} // skips optimization for placeholders
       />
       <p>
         <strong>Artist:</strong> {data.artistDisplayName}
