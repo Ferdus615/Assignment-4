@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { getValidObjectID } from "../../store/artwork";
 import Image from "next/image";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -18,10 +17,6 @@ const ArtworkDetail = () => {
       : null, // null = skip fetch
     fetcher
   );
-
-  if (!objectID || !getValidObjectID(objectID)) {
-    return <p>Invalid artwork ID.</p>;
-  }
 
   if (error) return <p>Error loading artwork.</p>;
   if (!data) return <p>Loading...</p>;

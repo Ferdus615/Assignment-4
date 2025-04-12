@@ -19,7 +19,7 @@ export default function ArtworkCard({ objectID }) {
 
   useEffect(() => {
     setIsFavourite(favourites.includes(objectID));
-  }, [favourites, objectID]); // ✅ added objectID here
+  }, [favourites, objectID]);
 
   function toggleFavourite() {
     if (isFavourite) {
