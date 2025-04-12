@@ -2,7 +2,7 @@ import Navbar from "./Navbar";
 
 const Layout = ({ children }) => (
   <>
-    <Navbar />
+    {/* <Navbar /> */}
     <main className="container mt-4">{children}</main>
   </>
 );

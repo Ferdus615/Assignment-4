@@ -5,6 +5,7 @@ import { Container } from "react-bootstrap";
 export default function App({ Component, pageProps }) {
   return (
     <>
+      <Navbar />
       <Container>
         <Component {...pageProps} />
       </Container>
